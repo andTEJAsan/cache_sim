@@ -46,8 +46,15 @@ struct Set
         } 
     };
     int least_recent(){
-
-    }
+        int max_ind=0;
+        // entries will be unique (unless they have hit the int_max)
+        for (int i = 0; i < (this->associativity); i++)
+        {
+            if(((this->lrutable)[i]) > (((this->lrutable)[max_ind]))) max_ind=i;   
+        }
+        return max_ind;
+        // function will be called like A.least_recent() where A is of type set and will give index of the least recent way in the cache
+    };
         
     
 };
@@ -99,21 +106,15 @@ struct Cache_level
         // I have made a second parameter to issue request to a higher level cache, if no higher level
         // then pass NULL
         
-        if (check_hit(adress)){
+        if (check_hit(adress) < assoc){
+            // if hit
             reads++;
             // update the lru table
         long long int tag = (adress / blocksize) / no_of_sets;
         int set_no = (adress / blocksize) % no_of_sets;
         Set set = data[set_no];
         int index = check_hit(adress);
-        for (int i = 0; i < assoc; i++)
-        {
-            set.lrutable[i]++;
-            if (set.lrutable[i] >= (assoc -1)) set.lrutable[i] = assoc-1;
-            if(i==index) set.lrutable[i]=0;
-        }
-        
-        
+        set.update_lru(index);
         }
         else{
             if(next_level == nullptr){
