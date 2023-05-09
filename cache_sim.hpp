@@ -36,14 +36,13 @@ struct Set
         }
     };
     void update_lru(int index){
-       for (int i = 0; i < associativity; i++)
+        for (int i = 0; i < associativity; i++)
         {
             if(this->lrutable[i]<INT_MAX){ 
             (this->lrutable[i])++;
             }
-            if(i==index) (this->lrutable[i])=0;
-
         } 
+        (this->lrutable[index])=0;
     };
     int least_recent(){
         int max_ind=0;
@@ -96,7 +95,7 @@ struct Cache_level
 
         for (int i = 0; i < assoc; i++) // scanning the set to find the tag
         {
-            if(set.entries[i].valid && (tag == set.entries[i].tag)) return i;   
+            if((set.entries)[i].valid && (tag == (set.entries)[i].tag)) return i;   
         }
         return assoc;
     }
@@ -105,14 +104,13 @@ struct Cache_level
 
         // I have made a second parameter to issue request to a higher level cache, if no higher level
         // then pass NULL
-        
-        if (check_hit(adress) < assoc){
-            // if hit
-            reads++;
-            // update the lru table
         long long int tag = (adress / blocksize) / no_of_sets;
         int set_no = (adress / blocksize) % no_of_sets;
         Set set = data[set_no];
+        if (check_hit(adress) < assoc){
+            // if hit
+        reads++;
+            // update the lru table        
         int index = check_hit(adress);
         set.update_lru(index);
         }
@@ -120,6 +118,22 @@ struct Cache_level
             if(next_level == nullptr){
                 read_misses++;
                 reads++;
+                int index_to_replace;
+                index_to_replace=set.least_recent();
+                ((set.entries)[index_to_replace]).tag=tag;
+                ((set.entries)[index_to_replace]).valid=true;
+                set.update_lru(index_to_replace);
+            }
+            else{
+                read_misses++;
+                reads++;
+                (* next_level).read_request(adress,nullptr);
+
+                int index_to_replace;
+                index_to_replace=set.least_recent();
+                ((set.entries)[index_to_replace]).tag=tag;
+                ((set.entries)[index_to_replace]).valid=true;
+                set.update_lru(index_to_replace);
             }
         }
     }
