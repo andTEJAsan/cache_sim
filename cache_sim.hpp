@@ -94,9 +94,9 @@ struct Cache_level
     void printer(){
         cout << "-----------------------------------------------"<<endl;
         cout << "READS : \t\t\t" << (this->reads)<<endl;
-        cout << "READ Misses: \t\t" << (this->read_misses)<< endl;
+        cout << "READ Misses: \t\t\t" << (this->read_misses)<< endl;
         cout << "WRITES : \t\t\t" << (this->writes) << endl;
-        cout << "WRITE Misses: \t\t" << (this->write_misses) << endl;
+        cout << "WRITE Misses: \t\t\t" << (this->write_misses) << endl;
         cout << "------------------------------------------------"<<endl;
     }
     int check_hit(long long int adress){
@@ -107,7 +107,7 @@ struct Cache_level
 
         for (int i = 0; i < assoc; i++) // scanning the set to find the tag
         {
-            if((set.entries)[i].valid && (tag == (set.entries)[i].tag)) return i;   
+            if((set.entries)[i].valid && (tag == (set.entries)[i].tag))  return i;   
         }
         return assoc;
     }
@@ -121,12 +121,14 @@ struct Cache_level
         Set set = data[set_no];
         if (check_hit(adress) < assoc){
             // if hit
+            cout << "hit\n";
         reads++;
             // update the lru table        
         int index = check_hit(adress);
         set.update_lru(index);
         }
         else{
+            cout << "miss\n";
             if(next_level == nullptr){
                 read_misses++;
                 reads++;
