@@ -76,6 +76,10 @@ struct Cache_level
     Set* data;
     //
     Cache_level(int blsize,int csize,int asso,int nosets){
+        reads=0;
+        read_misses=0;
+        writes=0;
+        write_misses=0;
         blocksize=blsize;
         cache_size=csize;
         assoc=asso;
@@ -86,6 +90,14 @@ struct Cache_level
             data[i] = Set(assoc);
         }
         
+    }
+    void printer(){
+        cout << "-----------------------------------------------"<<endl;
+        cout << "READS : \t\t\t" << (this->reads)<<endl;
+        cout << "READ Misses: \t\t" << (this->read_misses)<< endl;
+        cout << "WRITES : \t\t\t" << (this->writes) << endl;
+        cout << "WRITE Misses: \t\t" << (this->write_misses) << endl;
+        cout << "------------------------------------------------"<<endl;
     }
     int check_hit(long long int adress){
         // returns index of hit if there is a hit otherwise returns assoc
