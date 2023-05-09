@@ -119,6 +119,7 @@ struct Cache_level
         long long int tag = (adress / blocksize) / no_of_sets;
         int set_no = (adress / blocksize) % no_of_sets;
         Set set = data[set_no];
+        cout <<"checker : "<< check_hit(adress)<<endl;
         if (check_hit(adress) < assoc){
             // if hit
             cout << "hit\n";
