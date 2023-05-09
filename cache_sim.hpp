@@ -2,6 +2,7 @@
 #define __CACHE_SIM_HPP__
 
 using namespace std;
+#include<climits>
 // a single level of a cache will be an array of sets
 // each way will be an array of cache_entry, indexed by set number
 // each cache_entry will be a struct containing 2 values, the tag and the valid bit
@@ -20,7 +21,7 @@ struct Set
     Cache_entry* entries;
     int* lrutable;
     
-    Set() : associativity(0), entries(nullptr), lrutable(nullptr) {} // default constructor
+    Set() : associativity(0), entries(nullptr), lrutable(nullptr) {}; // default constructor
     Set(int size){
         associativity=size;
         entries = new Cache_entry[size];
@@ -30,11 +31,25 @@ struct Set
             /* code */
             entries[i].valid = false;
             entries[i].dirty = false;
-            lrutable[i] = size-1; // lrutable is initialized with the maximum value because we would always increment the counter, as we haven't used any set it should be infinity, but since the time cant be more than the size-1, we set it to size-1
+            lrutable[i] = INT_MAX; // lrutable is initialized with the maximum value because we would always increment the counter, as we haven't used any set it should be infinity, but since the time cant be more than the size-1, we set it to size-1
 
         }
-        
+    };
+    void update_lru(int index){
+       for (int i = 0; i < associativity; i++)
+        {
+            if(this->lrutable[i]<INT_MAX){ 
+            (this->lrutable[i])++;
+            }
+            if(i==index) (this->lrutable[i])=0;
+
+        } 
+    };
+    int least_recent(){
+
     }
+        
+    
 };
 typedef struct Set Set;
 
@@ -78,7 +93,9 @@ struct Cache_level
         }
         return assoc;
     }
+    
     void read_request(long long int adress, Cache_level* next_level){
+
         // I have made a second parameter to issue request to a higher level cache, if no higher level
         // then pass NULL
         
