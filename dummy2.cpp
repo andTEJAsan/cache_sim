@@ -1,31 +1,38 @@
 #include <iostream>
 
-// Define the struct
-struct Point {
-public:
-    // Constructor
-    Point(int x, int y) {
-        this->x = x;
-        this->y = y;
+struct MyStruct {
+    int** my2DArray;
+    int numRows;
+    int numCols;
+
+    MyStruct(int rows, int cols) {
+        numRows = rows;
+        numCols = cols;
+        my2DArray = new int*[numRows];
+        for (int i = 0; i < numRows; i++) {
+            my2DArray[i] = new int[numCols];
+        }
     }
 
-    // Public methods
-    int getX() { return x; }
-    int getY() { return y; }
-
-private:
-    // Private data members
-    int x;
-    int y;
+    ~MyStruct() {
+        for (int i = 0; i < numRows; i++) {
+            delete[] my2DArray[i];
+        }
+        delete[] my2DArray;
+    }
 };
 
 int main() {
-    // Create a Point instance using the constructor
-    Point p1(1, 2);
+    MyStruct myStruct(9, 4); // Initialize MyStruct with a 3x4 array
 
-    // Access the data members using public methods
-    std::cout << "p1.x: " << p1.getX() << std::endl;
-    std::cout << "p1.y: " << p1.getY() << std::endl;
+    // Access and modify the array
+    for (int i = 0; i < myStruct.numRows; i++) {
+        for (int j = 0; j < myStruct.numCols; j++) {
+            myStruct.my2DArray[i][j] = i + j;
+            std::cout << myStruct.my2DArray[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
 
     return 0;
 }
